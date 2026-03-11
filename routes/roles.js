@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 let roleModel = require('../schemas/roles');
+let userModel = require('../schemas/users');
 
 // R - GET all roles (exclude soft-deleted)
 router.get('/', async function (req, res, next) {
@@ -80,4 +81,29 @@ router.delete('/:id', async function (req, res, next) {
     }
 });
 
+// GET all users belong to a role
+router.get('/:id/users', async function (req, res, next) {
+    try {
+        let id = req.params.id;
+
+        // Kiểm tra role có tồn tại không
+        let role = await roleModel.findOne({ _id: id, isDeleted: false });
+        if (!role) {
+            return res.status(404).send("Role not found");
+        }
+
+        // Lấy tất cả user có role = id và chưa bị xóa
+        let users = await userModel.find({ role: id, isDeleted: false })
+            .populate({
+                path: 'role',
+                select: 'name description'
+            });
+
+        res.send(users);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
 module.exports = router;
+
