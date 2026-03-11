@@ -121,5 +121,26 @@ router.post('/enable', async function (req, res, next) {
     }
 });
 
+router.post('/disable', async function (req, res, next) {
+    try {
+        let { email, username } = req.body;
+
+        let result = await userModel.findOneAndUpdate(
+            { email: email, username: username, isDeleted: false },
+            { status: false },
+            { new: true }
+        );
+
+        if (result) {
+            res.send(result);
+        } else {
+            res.status(404).send("User not found or information is incorrect");
+        }
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+});
+
 module.exports = router;
+
 
