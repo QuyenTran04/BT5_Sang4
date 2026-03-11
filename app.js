@@ -26,7 +26,7 @@ app.use('/api/v1/categories', require('./routes/categories'));
 
 
 //connect
-mongoose.connect('mongodb://localhost:27017/NNPTUD-S4');
+mongoose.connect('mongodb://localhost:27017/BTSangT4');
 mongoose.connection.on('connected', function () {
   console.log("connected");
 })
